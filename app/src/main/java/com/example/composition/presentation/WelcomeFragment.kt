@@ -6,14 +6,42 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.composition.R
+import com.example.composition.databinding.FragmentWelcomeBinding
 
 
 class WelcomeFragment : Fragment() {
+
+    private val binding: FragmentWelcomeBinding
+        get() {
+        return _binding?: throw RuntimeException("FragmentWelcomeBinding is null")
+    }
+
+    private var _binding: FragmentWelcomeBinding? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_welcome, container, false)
+        _binding = FragmentWelcomeBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.buttonUnderstand.setOnClickListener {
+            launchChooseLevelFragment()
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private fun launchChooseLevelFragment(){
+        requireActivity().supportFragmentManager.beginTransaction()
+            .replace(R.id.main_container, ChooseLevelFragment.newInstance())
+            .addToBackStack(null)
+            .commit()
     }
 }
