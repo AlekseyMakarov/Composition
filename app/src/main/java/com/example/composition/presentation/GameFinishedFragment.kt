@@ -37,20 +37,6 @@ class GameFinishedFragment : Fragment() {
         }
 
         binding.gameResult = args.gameResult
-        binding.tvScorePercentage.apply {
-            text = String.format(
-                text.toString(),
-                args.gameResult.run {
-                    ((countOfRightAnswers / countOfQuestions.toDouble()) * 100).toInt()
-                }
-            )
-        }
-        binding.emojiResult.setImageDrawable(
-            ContextCompat.getDrawable(
-                requireContext(),
-                if (args.gameResult.winner) R.drawable.ic_smile else R.drawable.ic_sad
-            )
-        )
     }
 
     override fun onDestroyView() {
