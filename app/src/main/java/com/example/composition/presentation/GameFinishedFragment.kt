@@ -35,22 +35,8 @@ class GameFinishedFragment : Fragment() {
         binding.buttonRetry.setOnClickListener {
             retryGame()
         }
-        binding.tvRequiredAnswers.apply {
-            text =
-                String.format(text.toString(), args.gameResult.gameSettings.minCountOfRightAnswers)
-        }
-        binding.tvRequiredPercentage.apply {
-            text = String.format(
-                text.toString(),
-                args.gameResult.gameSettings.minPercentageOfRightAnswers
-            )
-        }
-        binding.tvScoreAnswers.apply {
-            text = String.format(
-                text.toString(),
-                args.gameResult.countOfRightAnswers
-            )
-        }
+
+        binding.gameResult = args.gameResult
         binding.tvScorePercentage.apply {
             text = String.format(
                 text.toString(),

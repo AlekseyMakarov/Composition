@@ -5,9 +5,15 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class GameSettings (
+data class GameSettings(
     val maxSumValue: Int,
     val minCountOfRightAnswers: Int,
     val minPercentageOfRightAnswers: Int,
     val minTimeInSeconds: Int
-    ): Parcelable
+) : Parcelable {
+    val minCountOfRightAnswersString
+        get() = minCountOfRightAnswers.toString()
+
+    val minPercentageOfRightAnswersString
+        get() = minPercentageOfRightAnswers.toString()
+}
