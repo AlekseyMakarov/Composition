@@ -9,13 +9,15 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.composition.R
 import com.example.composition.databinding.FragmentGameFinishedBinding
 import com.example.composition.domain.entity.GameResult
 
 class GameFinishedFragment : Fragment() {
 
-    private lateinit var gameResult: GameResult
+    private val args by navArgs<GameFinishedFragmentArgs>()
+
     private val binding: FragmentGameFinishedBinding
         get() = _binding ?: throw RuntimeException("FragmentGameFinishedBinding is null")
     private var _binding: FragmentGameFinishedBinding? = null
@@ -28,35 +30,31 @@ class GameFinishedFragment : Fragment() {
         return binding.root
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        parseArgs()
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.buttonRetry.setOnClickListener {
             retryGame()
         }
         binding.tvRequiredAnswers.apply {
-            text = String.format(text.toString(), gameResult.gameSettings.minCountOfRightAnswers)
+            text =
+                String.format(text.toString(), args.gameResult.gameSettings.minCountOfRightAnswers)
         }
         binding.tvRequiredPercentage.apply {
             text = String.format(
                 text.toString(),
-                gameResult.gameSettings.minPercentageOfRightAnswers
+                args.gameResult.gameSettings.minPercentageOfRightAnswers
             )
         }
         binding.tvScoreAnswers.apply {
             text = String.format(
                 text.toString(),
-                gameResult.countOfRightAnswers
+                args.gameResult.countOfRightAnswers
             )
         }
         binding.tvScorePercentage.apply {
             text = String.format(
                 text.toString(),
-                gameResult.run {
+                args.gameResult.run {
                     ((countOfRightAnswers / countOfQuestions.toDouble()) * 100).toInt()
                 }
             )
@@ -64,7 +62,7 @@ class GameFinishedFragment : Fragment() {
         binding.emojiResult.setImageDrawable(
             ContextCompat.getDrawable(
                 requireContext(),
-                if (gameResult.winner) R.drawable.ic_smile else R.drawable.ic_sad
+                if (args.gameResult.winner) R.drawable.ic_smile else R.drawable.ic_sad
             )
         )
     }
@@ -74,23 +72,7 @@ class GameFinishedFragment : Fragment() {
         _binding = null
     }
 
-    private fun parseArgs() {
-        gameResult = requireArguments().getParcelable<GameResult>(GAME_RESULT_KEY)!!
-    }
-
     private fun retryGame() {
         findNavController().popBackStack()
-    }
-
-    companion object {
-        const val GAME_RESULT_KEY = "game_result"
-
-        fun newInstance(gameResult: GameResult): GameFinishedFragment {
-            return GameFinishedFragment().apply {
-                arguments = Bundle().apply {
-                    putParcelable(GAME_RESULT_KEY, gameResult)
-                }
-            }
-        }
     }
 }
