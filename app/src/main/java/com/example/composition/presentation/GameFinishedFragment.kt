@@ -8,6 +8,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE
+import androidx.navigation.fragment.findNavController
 import com.example.composition.R
 import com.example.composition.databinding.FragmentGameFinishedBinding
 import com.example.composition.domain.entity.GameResult
@@ -34,10 +35,8 @@ class GameFinishedFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        addCallbackOnBackPressed()
         binding.buttonRetry.setOnClickListener {
-            requireActivity().supportFragmentManager
-                .popBackStack(GameFragment.GAME_FRAGMENT_TAG, POP_BACK_STACK_INCLUSIVE)
+            retryGame()
         }
         binding.tvRequiredAnswers.apply {
             text = String.format(text.toString(), gameResult.gameSettings.minCountOfRightAnswers)
@@ -79,22 +78,12 @@ class GameFinishedFragment : Fragment() {
         gameResult = requireArguments().getParcelable<GameResult>(GAME_RESULT_KEY)!!
     }
 
-    private fun addCallbackOnBackPressed() {
-        requireActivity().onBackPressedDispatcher.addCallback(this.viewLifecycleOwner, object :
-            OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                retryGame()
-            }
-        })
-    }
-
     private fun retryGame() {
-        requireActivity().supportFragmentManager
-            .popBackStack(GameFragment.GAME_FRAGMENT_TAG, POP_BACK_STACK_INCLUSIVE)
+        findNavController().popBackStack()
     }
 
     companion object {
-        private const val GAME_RESULT_KEY = "game_result"
+        const val GAME_RESULT_KEY = "game_result"
 
         fun newInstance(gameResult: GameResult): GameFinishedFragment {
             return GameFinishedFragment().apply {

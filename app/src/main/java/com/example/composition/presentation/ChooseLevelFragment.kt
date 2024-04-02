@@ -5,15 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.example.composition.R
 import com.example.composition.databinding.FragmentChooseLevelBinding
 import com.example.composition.domain.entity.Level
 
-
 class ChooseLevelFragment : Fragment() {
 
     private val binding: FragmentChooseLevelBinding
-    get() = _binding?: throw RuntimeException("FragmentChooseLevelBinding is null")
+        get() = _binding ?: throw RuntimeException("FragmentChooseLevelBinding is null")
     private var _binding: FragmentChooseLevelBinding? = null
 
     override fun onCreateView(
@@ -42,11 +42,12 @@ class ChooseLevelFragment : Fragment() {
         }
     }
 
-    private fun launchGameFragment(level: Level){
-        requireActivity().supportFragmentManager.beginTransaction()
-            .replace(R.id.main_container, GameFragment.newInstance(level))
-            .addToBackStack(GameFragment.GAME_FRAGMENT_TAG)
-            .commit()
+    private fun launchGameFragment(level: Level) {
+        val bundle = Bundle().apply {
+            putParcelable(GameFragment.LEVEL_KEY, level)
+        }
+
+        findNavController().navigate(R.id.action_chooseLevelFragment_to_gameFragment, bundle)
     }
 
     override fun onDestroyView() {
@@ -54,8 +55,8 @@ class ChooseLevelFragment : Fragment() {
         _binding = null
     }
 
-    companion object{
-        fun newInstance(): ChooseLevelFragment{
+    companion object {
+        fun newInstance(): ChooseLevelFragment {
             return ChooseLevelFragment()
         }
     }
